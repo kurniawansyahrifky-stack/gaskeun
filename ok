@@ -1,0 +1,294 @@
+cat << 'EOF' > ~/pentol-mbois/public/index.html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pentol Mbois — Sensasi Rasa Sultan</title>
+  <!-- Tailwind CSS & Font Awesome CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0c10;
+      color: #f1f1f1;
+    }
+    .font-luxury {
+      font-family: 'Playfair Display', serif;
+    }
+    .gold-gradient {
+      background: linear-gradient(135deg, #f7d070 0%, #d4af37 50%, #996515 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+    }
+    .glow-card:hover {
+      box-shadow: 0 10px 30px rgba(230, 57, 70, 0.2);
+    }
+    .glass-panel {
+      background: rgba(22, 24, 30, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 215, 0, 0.12);
+    }
+  </style>
+</head>
+<body class="selection:bg-amber-500 selection:text-black">
+
+  <!-- Navbar -->
+  <nav class="fixed w-full top-0 z-50 glass-panel border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center transition-all">
+    <div class="flex items-center space-x-3">
+      <span class="text-3xl text-amber-500">🌶️</span>
+      <div>
+        <h1 class="text-2xl font-extrabold tracking-wider font-luxury gold-gradient">PENTOL MBOIS</h1>
+        <p class="text-[10px] tracking-widest uppercase text-amber-400 font-semibold">Street Food Kelas Sultan</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-4">
+      <button onclick="toggleCart()" class="relative bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-full font-bold flex items-center space-x-2 transition glow-gold">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span id="cart-count" class="bg-red-600 text-white text-xs px-2 py-0.5 rounded-full ml-1 font-extrabold">0</span>
+      </button>
+      <a href="/admin.html" class="text-xs text-gray-400 hover:text-amber-400 py-2 px-3 border border-gray-700 rounded-lg transition" title="Portal Pengelola">
+        <i class="fa-solid fa-lock"></i>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Header Simpel Tanpa Foto Bawaan -->
+  <header class="pt-32 pb-12 px-6 text-center max-w-4xl mx-auto space-y-3">
+    <div class="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 px-4 py-1.5 rounded-full">
+      <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+      <span class="text-xs font-bold text-amber-300 uppercase tracking-widest">Resep Warisan Rempah Nusantara</span>
+    </div>
+    <h2 class="text-3xl md:text-5xl font-extrabold font-luxury gold-gradient">Koleksi Menu Pentol Mbois</h2>
+    <p class="text-gray-400 text-sm md:text-base">Pilih varian favoritmu, masukkan ke keranjang, dan langsung checkout otomatis via WhatsApp.</p>
+  </header>
+
+  <!-- Galeri & Menu Section -->
+  <section id="menu" class="py-10 px-6 max-w-7xl mx-auto">
+    <!-- Container Menu Dinamis -->
+    <div id="menu-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Loading Placeholder -->
+      <div class="col-span-full text-center py-12 text-gray-400">
+        <i class="fa-solid fa-circle-notch fa-spin text-3xl text-amber-500"></i>
+        <p class="mt-3">Memuat racikan menu Pentol Mbois...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating Cart Modal -->
+  <div id="cart-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border border-amber-500/30 flex flex-col max-h-[90vh]">
+      <div class="flex justify-between items-center pb-4 border-b border-gray-800">
+        <h3 class="text-xl font-bold text-amber-400 flex items-center space-x-2">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span>Keranjang Pesanan Mbois</span>
+        </h3>
+        <button onclick="toggleCart()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+      </div>
+
+      <div id="cart-items" class="flex-1 overflow-y-auto py-4 space-y-3">
+        <!-- Item Keranjang Dibuat di JS -->
+      </div>
+
+      <div class="border-t border-gray-800 pt-4 space-y-4">
+        <div class="flex justify-between text-lg font-bold">
+          <span>Total Tagihan:</span>
+          <span id="cart-total" class="text-amber-400">Rp 0</span>
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block">Nama Pemesan:</label>
+          <input type="text" id="cust-name" placeholder="Contoh: Budi Santoso" class="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block">Alamat / Catatan Pengiriman:</label>
+          <textarea id="cust-notes" rows="2" placeholder="Contoh: Jl. Merdeka No 12 (Bumbu pedas pisah ya)" class="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"></textarea>
+        </div>
+
+        <button onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3 rounded-xl flex items-center justify-center space-x-2 transition glow-gold">
+          <i class="fa-brands fa-whatsapp text-xl"></i>
+          <span>Kirim Order ke WhatsApp Sekarang</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="glass-panel border-t border-white/5 py-12 px-6 mt-20 text-center">
+    <div class="max-w-4xl mx-auto space-y-4">
+      <h3 class="text-2xl font-bold font-luxury gold-gradient">PENTOL MBOIS INDONESIA</h3>
+      <p class="text-gray-400 text-sm">Pesanan Cepat, Rasa Nikmat, Sensasi Sultan.</p>
+      <p class="text-xs text-amber-500/80 font-mono">Hubungi Official WhatsApp: 085733242793</p>
+      <div class="text-xs text-gray-600 pt-4">&copy; 2026 Pentol Mbois. All Rights Reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Frontend Logic -->
+  <script>
+    let menus = [];
+    let cart = [];
+    const WA_NUMBER = "6285733242793";
+
+    async function loadCatalog() {
+      try {
+        const res = await fetch('/api/catalog');
+        const data = await res.json();
+        if (data.success) {
+          menus = data.menus;
+          renderMenus();
+        }
+      } catch (err) {
+        document.getElementById('menu-container').innerHTML = `
+          <div class="col-span-full text-center text-red-400 py-10">
+            Gagal memuat katalog. Pastikan server aktif.
+          </div>
+        `;
+      }
+    }
+
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num).toLocaleString('id-ID');
+    }
+
+    function renderMenus() {
+      const container = document.getElementById('menu-container');
+      if (menus.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center text-gray-400 py-12">Belum ada menu tersedia. Silakan tambahkan melalui halaman admin.</div>`;
+        return;
+      }
+
+      container.innerHTML = menus.map(item => `
+        <div class="glass-panel rounded-2xl overflow-hidden border border-white/5 glow-card transition duration-300 flex flex-col justify-between">
+          <div class="relative">
+            <img src="${item.image}" alt="${item.title}" class="w-full h-48 object-cover">
+            <span class="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-amber-400 text-xs px-2.5 py-1 rounded-full font-bold border border-amber-500/20">
+              ${item.category || 'Reguler'}
+            </span>
+            ${!item.isAvailable ? '<div class="absolute inset-0 bg-black/80 flex items-center justify-center text-red-400 font-extrabold text-sm">HABIS</div>' : ''}
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="font-bold text-lg text-white mb-1">${item.title}</h3>
+            </div>
+            <div class="pt-2 flex items-center justify-between border-t border-gray-800">
+              <span class="text-amber-400 font-extrabold text-lg">${formatRupiah(item.price)}</span>
+              <button 
+                onclick="addToCart(${item.id})" 
+                ${!item.isAvailable ? 'disabled' : ''}
+                class="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-black px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-plus"></i>
+                <span>Pesan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(id) {
+      const item = menus.find(m => m.id === id);
+      if (!item || !item.isAvailable) return;
+
+      const existing = cart.find(c => c.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...item, qty: 1 });
+      }
+      updateCartUI();
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.id !== id);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalCount = cart.reduce((acc, curr) => acc + curr.qty, 0);
+      document.getElementById('cart-count').innerText = totalCount;
+
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = `<div class="text-center text-gray-500 py-8 text-sm">Keranjang masih kosong. Yuk pilih pentol favoritmu!</div>`;
+        cartTotal.innerText = 'Rp 0';
+        return;
+      }
+
+      let total = 0;
+      cartItems.innerHTML = cart.map(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        return `
+          <div class="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-gray-800">
+            <div class="flex-1 pr-2">
+              <h4 class="font-bold text-sm text-white">${item.title}</h4>
+              <span class="text-xs text-amber-400 font-semibold">${formatRupiah(item.price)}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 rounded-md bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center font-bold text-xs">-</button>
+              <span class="text-sm font-bold w-4 text-center">${item.qty}</span>
+              <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 rounded-md bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center font-bold text-xs">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartTotal.innerText = formatRupiah(total);
+    }
+
+    function toggleCart() {
+      const modal = document.getElementById('cart-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    function checkoutWhatsApp() {
+      if (cart.length === 0) {
+        alert('Keranjang belanja Anda masih kosong!');
+        return;
+      }
+
+      const name = document.getElementById('cust-name').value.trim() || 'Pelanggan';
+      const notes = document.getElementById('cust-notes').value.trim() || 'Tidak ada catatan tambahan';
+
+      let total = 0;
+      let orderText = `*PESANAN BARU - PENTOL MBOIS*\n`;
+      orderText += `----------------------------------------\n`;
+      orderText += `👤 *Nama:* ${name}\n`;
+      orderText += `📍 *Catatan / Alamat:* ${notes}\n`;
+      orderText += `----------------------------------------\n`;
+      orderText += `*DAFTAR MENU:*\n`;
+
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        orderText += `${index + 1}. ${item.title} x${item.qty} = ${formatRupiah(subtotal)}\n`;
+      });
+
+      orderText += `----------------------------------------\n`;
+      orderText += `💰 *TOTAL HARGA: ${formatRupiah(total)}*\n`;
+      orderText += `----------------------------------------\n`;
+      orderText += `Mohon segera diproses ya Min. Terima kasih! 🔥`;
+
+      const encodedUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(orderText)}`;
+      window.open(encodedUrl, '_blank');
+    }
+
+    // Load menu saat start
+    loadCatalog();
+  </script>
+</body>
+</html>
+EOF
